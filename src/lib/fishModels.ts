@@ -13,18 +13,32 @@ export interface FishModelDef {
  * Every model is auto-centred and auto-scaled at runtime (see FishMesh), so
  * `length` is the only tuning knob needed here.
  */
+/** Base body length before the per-rarity size multiplier below. */
+const BASE_LENGTH = 0.9;
+
+/** Requested size ladder: common 10x, epic 15x, rare 20x, legendary 30x, mythic 50x. */
+export const SIZE_MULTIPLIER: Record<Rarity, number> = {
+  common: 10,
+  rare: 20,
+  epic: 15,
+  legendary: 30,
+  mythic: 50,
+};
+
+const len = (rarity: Rarity) => BASE_LENGTH * SIZE_MULTIPLIER[rarity];
+
 export const FISH_MODELS: Record<Rarity, FishModelDef[]> = {
-  common: [{ url: "/models/fish_common.glb", length: 0.9 }],
-  rare: [{ url: "/models/fish_rare.glb", length: 1.5 }],
-  epic: [{ url: "/models/fish_epic.glb", length: 1.9 }],
+  common: [{ url: "/models/fish_common.glb", length: len("common") }],
+  rare: [{ url: "/models/fish_rare.glb", length: len("rare") }],
+  epic: [{ url: "/models/fish_epic.glb", length: len("epic") }],
   legendary: [
-    { url: "/models/fish_legendary_1.glb", length: 3.0 },
-    { url: "/models/fish_legendary_2.glb", length: 3.0 },
+    { url: "/models/fish_legendary_1.glb", length: len("legendary") },
+    { url: "/models/fish_legendary_2.glb", length: len("legendary") },
   ],
   mythic: [
-    { url: "/models/fish_mythic_1.glb", length: 4.6 },
-    { url: "/models/fish_mythic_2.glb", length: 4.6 },
-    { url: "/models/fish_mythic_3.glb", length: 4.6 },
+    { url: "/models/fish_mythic_1.glb", length: len("mythic") },
+    { url: "/models/fish_mythic_2.glb", length: len("mythic") },
+    { url: "/models/fish_mythic_3.glb", length: len("mythic") },
   ],
 };
 

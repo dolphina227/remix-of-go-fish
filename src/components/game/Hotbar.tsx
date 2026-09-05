@@ -7,10 +7,16 @@ import { getFishData, mutationFor, priceFor, rodOrDefault } from "@/lib/fishRule
 import { useRodStore } from "@/hooks/useRodStore";
 import { useBaitStore } from "@/hooks/useBaitStore";
 import { baitOrDefault } from "@/lib/fishRules";
+import type { Rarity } from "@/lib/fishRules";
+import { useFishThumbnail } from "@/hooks/useFishThumbnail";
 
 function speciesInfo(id: string) {
   const s = getFishData().species.find((sp) => sp.id === id);
-  return { name: s?.name ?? id, color: s?.color ?? "#93c5fd" };
+  return {
+    name: s?.name ?? id,
+    color: s?.color ?? "#93c5fd",
+    rarity: (s?.rarity ?? "common") as Rarity,
+  };
 }
 
 /**
@@ -119,7 +125,7 @@ export function Hotbar() {
                     className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-slate-950/40"
                     style={{ color: info.color }}
                   >
-                    <FishThumbnail color={info.color} />
+                    <FishThumbnail color={info.color} rarity={info.rarity} />
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold leading-tight">
@@ -222,8 +228,12 @@ function HotSlot({
   );
 }
 
-/** Simple stylised fish icon tinted to the species colour. */
-function FishThumbnail({ color }: { color: string }) {
+/** Bag icon: the real GLB model, falling back to the stylised fish while it renders. */
+function FishThumbnail({ color, rarity }: { color: string; rarity: Rarity }) {
+  const src = useFishThumbnail(rarity);
+  if (src) {
+    return <img src={src} alt="" className="h-10 w-10 object-contain" loading="lazy" />;
+  }
   return (
     <svg
       viewBox="0 0 24 24"
