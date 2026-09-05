@@ -110,10 +110,6 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
-function TestToaster() {
-  return <div id="test-toaster-slot">TEST TOASTER SLOT</div>;
-}
-
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
@@ -122,8 +118,7 @@ function RootComponent() {
       <WagmiProvider config={wagmiConfig}>
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
-        <div id="root-toaster-marker" />
-        <TestToaster />
+        <SonnerToaster position="top-center" />
       </WagmiProvider>
     </QueryClientProvider>
   );
