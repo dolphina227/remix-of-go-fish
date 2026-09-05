@@ -13,7 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { WagmiProvider } from "wagmi";
 import { wagmiConfig } from "../lib/wagmi";
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster as SonnerToaster } from "sonner";
 
 function NotFoundComponent() {
   return (
