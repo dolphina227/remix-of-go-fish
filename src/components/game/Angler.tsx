@@ -1085,11 +1085,73 @@ export function Angler() {
 
             <group ref={handAnchor} position={[0, -1.6, 0.2]}>
             <group ref={rod}>
-              {/* grip */}
+              {/* grip — bentuk & ketebalan khas tiap tier */}
               <mesh position={[0, 0.35, 0]} castShadow>
-                <cylinderGeometry args={[0.13, 0.15, 1.1, 8]} />
-                <meshStandardMaterial color={look.grip} roughness={1} />
+                {look.shape === "carved" || look.shape === "ornate" ? (
+                  <cylinderGeometry
+                    args={[look.gripRadius * 0.85, look.gripRadius * 1.15, 1.1, 6]}
+                  />
+                ) : look.shape === "ethereal" ? (
+                  <capsuleGeometry args={[look.gripRadius, 0.8, 4, 10]} />
+                ) : (
+                  <cylinderGeometry
+                    args={[look.gripRadius * 0.9, look.gripRadius, 1.1, look.shape === "wood" ? 6 : 12]}
+                  />
+                )}
+                <meshStandardMaterial
+                  color={look.grip}
+                  roughness={look.shape === "wood" ? 1 : 0.55}
+                  metalness={look.shape === "slim" || look.shape === "ethereal" ? 0.5 : 0.1}
+                  emissive={look.accent}
+                  emissiveIntensity={look.glow * 0.3}
+                />
               </mesh>
+              {/* ornamen permata di sepanjang pegangan */}
+              {Array.from({ length: look.gems }, (_, i) => (
+                <mesh
+                  key={i}
+                  position={[0, 0.05 + i * (0.55 / Math.max(1, look.gems)), look.gripRadius]}
+                  castShadow
+                >
+                  <octahedronGeometry args={[0.045 + look.glow * 0.02, 0]} />
+                  <meshStandardMaterial
+                    color={look.accent}
+                    emissive={look.accent}
+                    emissiveIntensity={0.4 + look.glow}
+                    metalness={0.6}
+                    roughness={0.2}
+                  />
+                </mesh>
+              ))}
+              {/* sayap/ekor ornamen khas tier tinggi */}
+              {(look.shape === "ornate" || look.shape === "ethereal") && (
+                <>
+                  {[-1, 1].map((sgn) => (
+                    <mesh
+                      key={sgn}
+                      position={[sgn * 0.16, 0.95, 0]}
+                      rotation={[0, 0, sgn * 0.5]}
+                      castShadow
+                    >
+                      <coneGeometry args={[0.07, 0.34, look.shape === "ethereal" ? 4 : 3]} />
+                      <meshStandardMaterial
+                        color={look.accent}
+                        emissive={look.accent}
+                        emissiveIntensity={look.glow}
+                        metalness={0.7}
+                        roughness={0.25}
+                      />
+                    </mesh>
+                  ))}
+                </>
+              )}
+              {look.shape === "ethereal" && (
+                <mesh position={[0, 0.9, 0]} rotation={[Math.PI / 2, 0, 0]}>
+                  <torusGeometry args={[0.3, 0.012, 6, 28]} />
+                  <meshBasicMaterial color={look.accent} transparent opacity={0.6} />
+                </mesh>
+              )}
+
               {/* reel */}
               <mesh position={[0.28, 0.75, 0]} rotation={[0, 0, Math.PI / 2]} castShadow>
                 <cylinderGeometry args={[0.24, 0.24, 0.28, 12]} />
@@ -1117,14 +1179,37 @@ export function Angler() {
               {/* flexible upper blank */}
               <group ref={rodBend} position={[0, 0.9, 0]}>
                 <mesh position={[0, 1.5, 0]} castShadow>
-                  <cylinderGeometry args={[0.055, 0.1, 3, 8]} />
+                  <cylinderGeometry
+                    args={[
+                      look.blankRadius[1],
+                      look.blankRadius[0],
+                      3,
+                      look.shape === "wood" ? 6 : look.shape === "carved" ? 5 : 10,
+                    ]}
+                  />
                   <meshStandardMaterial
                     color={look.blank}
-                    roughness={0.5}
+                    roughness={look.shape === "wood" ? 0.9 : 0.4}
+                    metalness={look.shape === "slim" || look.shape === "ethereal" ? 0.55 : 0.1}
                     emissive={look.accent}
                     emissiveIntensity={look.glow * 0.5}
                   />
                 </mesh>
+                {/* lilitan/ukiran khas tier */}
+                {(look.shape === "fiber" || look.shape === "carved" || look.shape === "ornate") &&
+                  [0.4, 1.1, 1.8, 2.5].map((y, i) => (
+                    <mesh key={i} position={[0, y, 0]} rotation={[Math.PI / 2, 0, 0]} castShadow>
+                      <torusGeometry args={[look.blankRadius[0] * 1.05, 0.014, 6, 12]} />
+                      <meshStandardMaterial
+                        color={look.accent}
+                        metalness={0.6}
+                        roughness={0.35}
+                        emissive={look.accent}
+                        emissiveIntensity={look.glow * 0.6}
+                      />
+                    </mesh>
+                  ))}
+
                 {/* ring guide bawah */}
                 <group position={[0.12, 1.0, 0]}>
                   <object3D ref={(o) => (guideRefs.current[1] = o)} />
@@ -1217,29 +1302,113 @@ export function Angler() {
     </group>
   );
 }
-/** Bola umpan bercahaya yang menggantung di bawah pelampung. */
+/** Umpan yang menggantung di bawah pelampung — bentuknya khas per tingkat. */
 function BaitOrb3D() {
   const baitId = useBaitStore((s) => s.equippedId);
   const look = baitLook(baitId);
+  const s = look.size;
+  const mat = (
+    <meshStandardMaterial
+      color={look.core}
+      roughness={0.25}
+      metalness={0.2}
+      emissive={look.accent}
+      emissiveIntensity={look.glow}
+    />
+  );
   return (
-    <group position={[0, -0.42, 0]}>
-      <mesh castShadow>
-        <sphereGeometry args={[0.12, 16, 16]} />
-        <meshStandardMaterial
-          color={look.core}
-          roughness={0.25}
-          metalness={0.1}
-          emissive={look.accent}
-          emissiveIntensity={look.glow}
-        />
-      </mesh>
+    <group position={[0, -0.42, 0]} scale={s}>
+      {look.shape === "grub" && (
+        <>
+          <mesh castShadow rotation={[0, 0, 0.5]}>
+            <capsuleGeometry args={[0.075, 0.14, 4, 10]} />
+            {mat}
+          </mesh>
+          <mesh position={[0.06, 0.1, 0]} castShadow>
+            <sphereGeometry args={[0.06, 10, 10]} />
+            <meshStandardMaterial color={look.shell} roughness={0.6} />
+          </mesh>
+        </>
+      )}
+      {look.shape === "cluster" && (
+        <>
+          {[
+            [0, 0.05, 0],
+            [0.09, -0.04, 0.03],
+            [-0.08, -0.05, -0.03],
+            [0.01, -0.11, 0.06],
+          ].map((p, i) => (
+            <mesh key={i} position={p as [number, number, number]} castShadow>
+              <sphereGeometry args={[0.068 - i * 0.006, 10, 10]} />
+              {mat}
+            </mesh>
+          ))}
+        </>
+      )}
+      {look.shape === "crystal" && (
+        <>
+          <mesh castShadow rotation={[0, 0.4, 0]}>
+            <octahedronGeometry args={[0.15, 0]} />
+            {mat}
+          </mesh>
+          <mesh position={[0.11, -0.08, 0]} rotation={[0, 0, -0.6]} castShadow>
+            <octahedronGeometry args={[0.07, 0]} />
+            <meshStandardMaterial color={look.shell} emissive={look.accent} emissiveIntensity={look.glow * 0.6} />
+          </mesh>
+        </>
+      )}
+      {look.shape === "rune" && (
+        <>
+          <mesh castShadow>
+            <torusKnotGeometry args={[0.09, 0.028, 64, 10]} />
+            {mat}
+          </mesh>
+          <mesh rotation={[Math.PI / 2, 0, 0]}>
+            <torusGeometry args={[0.17, 0.012, 6, 24]} />
+            <meshBasicMaterial color={look.accent} transparent opacity={0.7} />
+          </mesh>
+        </>
+      )}
+      {look.shape === "flame" && (
+        <>
+          <mesh castShadow>
+            <coneGeometry args={[0.11, 0.3, 10]} />
+            {mat}
+          </mesh>
+          <mesh position={[0, 0.02, 0]} rotation={[Math.PI, 0, 0]}>
+            <coneGeometry args={[0.14, 0.22, 10, 1, true]} />
+            <meshBasicMaterial color={look.accent} transparent opacity={0.35} side={2} />
+          </mesh>
+        </>
+      )}
+      {look.shape === "void" && (
+        <>
+          <mesh castShadow>
+            <icosahedronGeometry args={[0.15, 0]} />
+            <meshStandardMaterial
+              color={look.shell}
+              emissive={look.core}
+              emissiveIntensity={look.glow}
+              metalness={0.8}
+              roughness={0.15}
+            />
+          </mesh>
+          {[0, 1, 2].map((i) => (
+            <mesh key={i} rotation={[i * 1.1, i * 0.7, i * 0.4]}>
+              <torusGeometry args={[0.23 + i * 0.03, 0.009, 6, 28]} />
+              <meshBasicMaterial color={look.core} transparent opacity={0.6} />
+            </mesh>
+          ))}
+        </>
+      )}
       {look.glow > 0 && (
         <mesh>
-          <sphereGeometry args={[0.12 + look.glow * 0.1, 12, 12]} />
-          <meshBasicMaterial color={look.core} transparent opacity={0.16 + look.glow * 0.14} />
+          <sphereGeometry args={[0.15 + look.glow * 0.1, 12, 12]} />
+          <meshBasicMaterial color={look.core} transparent opacity={0.14 + look.glow * 0.12} />
         </mesh>
       )}
       <pointLight color={look.core} intensity={look.glow * 1.6} distance={2.5} />
     </group>
   );
 }
+
