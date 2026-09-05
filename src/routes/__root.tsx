@@ -119,7 +119,7 @@ function RootComponent() {
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
         <div id="root-toaster-marker" />
-        <Toaster />
+        <Toaster position="top-center" />
       </WagmiProvider>
     </QueryClientProvider>
   );
