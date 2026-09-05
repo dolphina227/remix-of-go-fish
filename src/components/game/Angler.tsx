@@ -1217,29 +1217,113 @@ export function Angler() {
     </group>
   );
 }
-/** Bola umpan bercahaya yang menggantung di bawah pelampung. */
+/** Umpan yang menggantung di bawah pelampung — bentuknya khas per tingkat. */
 function BaitOrb3D() {
   const baitId = useBaitStore((s) => s.equippedId);
   const look = baitLook(baitId);
+  const s = look.size;
+  const mat = (
+    <meshStandardMaterial
+      color={look.core}
+      roughness={0.25}
+      metalness={0.2}
+      emissive={look.accent}
+      emissiveIntensity={look.glow}
+    />
+  );
   return (
-    <group position={[0, -0.42, 0]}>
-      <mesh castShadow>
-        <sphereGeometry args={[0.12, 16, 16]} />
-        <meshStandardMaterial
-          color={look.core}
-          roughness={0.25}
-          metalness={0.1}
-          emissive={look.accent}
-          emissiveIntensity={look.glow}
-        />
-      </mesh>
+    <group position={[0, -0.42, 0]} scale={s}>
+      {look.shape === "grub" && (
+        <>
+          <mesh castShadow rotation={[0, 0, 0.5]}>
+            <capsuleGeometry args={[0.075, 0.14, 4, 10]} />
+            {mat}
+          </mesh>
+          <mesh position={[0.06, 0.1, 0]} castShadow>
+            <sphereGeometry args={[0.06, 10, 10]} />
+            <meshStandardMaterial color={look.shell} roughness={0.6} />
+          </mesh>
+        </>
+      )}
+      {look.shape === "cluster" && (
+        <>
+          {[
+            [0, 0.05, 0],
+            [0.09, -0.04, 0.03],
+            [-0.08, -0.05, -0.03],
+            [0.01, -0.11, 0.06],
+          ].map((p, i) => (
+            <mesh key={i} position={p as [number, number, number]} castShadow>
+              <sphereGeometry args={[0.068 - i * 0.006, 10, 10]} />
+              {mat}
+            </mesh>
+          ))}
+        </>
+      )}
+      {look.shape === "crystal" && (
+        <>
+          <mesh castShadow rotation={[0, 0.4, 0]}>
+            <octahedronGeometry args={[0.15, 0]} />
+            {mat}
+          </mesh>
+          <mesh position={[0.11, -0.08, 0]} rotation={[0, 0, -0.6]} castShadow>
+            <octahedronGeometry args={[0.07, 0]} />
+            <meshStandardMaterial color={look.shell} emissive={look.accent} emissiveIntensity={look.glow * 0.6} />
+          </mesh>
+        </>
+      )}
+      {look.shape === "rune" && (
+        <>
+          <mesh castShadow>
+            <torusKnotGeometry args={[0.09, 0.028, 64, 10]} />
+            {mat}
+          </mesh>
+          <mesh rotation={[Math.PI / 2, 0, 0]}>
+            <torusGeometry args={[0.17, 0.012, 6, 24]} />
+            <meshBasicMaterial color={look.accent} transparent opacity={0.7} />
+          </mesh>
+        </>
+      )}
+      {look.shape === "flame" && (
+        <>
+          <mesh castShadow>
+            <coneGeometry args={[0.11, 0.3, 10]} />
+            {mat}
+          </mesh>
+          <mesh position={[0, 0.02, 0]} rotation={[Math.PI, 0, 0]}>
+            <coneGeometry args={[0.14, 0.22, 10, 1, true)]} />
+            <meshBasicMaterial color={look.accent} transparent opacity={0.35} side={2} />
+          </mesh>
+        </>
+      )}
+      {look.shape === "void" && (
+        <>
+          <mesh castShadow>
+            <icosahedronGeometry args={[0.15, 0]} />
+            <meshStandardMaterial
+              color={look.shell}
+              emissive={look.core}
+              emissiveIntensity={look.glow}
+              metalness={0.8}
+              roughness={0.15}
+            />
+          </mesh>
+          {[0, 1, 2].map((i) => (
+            <mesh key={i} rotation={[i * 1.1, i * 0.7, i * 0.4]}>
+              <torusGeometry args={[0.23 + i * 0.03, 0.009, 6, 28]} />
+              <meshBasicMaterial color={look.core} transparent opacity={0.6} />
+            </mesh>
+          ))}
+        </>
+      )}
       {look.glow > 0 && (
         <mesh>
-          <sphereGeometry args={[0.12 + look.glow * 0.1, 12, 12]} />
-          <meshBasicMaterial color={look.core} transparent opacity={0.16 + look.glow * 0.14} />
+          <sphereGeometry args={[0.15 + look.glow * 0.1, 12, 12]} />
+          <meshBasicMaterial color={look.core} transparent opacity={0.14 + look.glow * 0.12} />
         </mesh>
       )}
       <pointLight color={look.core} intensity={look.glow * 1.6} distance={2.5} />
     </group>
   );
 }
+
