@@ -1085,11 +1085,73 @@ export function Angler() {
 
             <group ref={handAnchor} position={[0, -1.6, 0.2]}>
             <group ref={rod}>
-              {/* grip */}
+              {/* grip — bentuk & ketebalan khas tiap tier */}
               <mesh position={[0, 0.35, 0]} castShadow>
-                <cylinderGeometry args={[0.13, 0.15, 1.1, 8]} />
-                <meshStandardMaterial color={look.grip} roughness={1} />
+                {look.shape === "carved" || look.shape === "ornate" ? (
+                  <cylinderGeometry
+                    args={[look.gripRadius * 0.85, look.gripRadius * 1.15, 1.1, 6]}
+                  />
+                ) : look.shape === "ethereal" ? (
+                  <capsuleGeometry args={[look.gripRadius, 0.8, 4, 10]} />
+                ) : (
+                  <cylinderGeometry
+                    args={[look.gripRadius * 0.9, look.gripRadius, 1.1, look.shape === "wood" ? 6 : 12]}
+                  />
+                )}
+                <meshStandardMaterial
+                  color={look.grip}
+                  roughness={look.shape === "wood" ? 1 : 0.55}
+                  metalness={look.shape === "slim" || look.shape === "ethereal" ? 0.5 : 0.1}
+                  emissive={look.accent}
+                  emissiveIntensity={look.glow * 0.3}
+                />
               </mesh>
+              {/* ornamen permata di sepanjang pegangan */}
+              {Array.from({ length: look.gems }, (_, i) => (
+                <mesh
+                  key={i}
+                  position={[0, 0.05 + i * (0.55 / Math.max(1, look.gems)), look.gripRadius]}
+                  castShadow
+                >
+                  <octahedronGeometry args={[0.045 + look.glow * 0.02, 0]} />
+                  <meshStandardMaterial
+                    color={look.accent}
+                    emissive={look.accent}
+                    emissiveIntensity={0.4 + look.glow}
+                    metalness={0.6}
+                    roughness={0.2}
+                  />
+                </mesh>
+              ))}
+              {/* sayap/ekor ornamen khas tier tinggi */}
+              {(look.shape === "ornate" || look.shape === "ethereal") && (
+                <>
+                  {[-1, 1].map((sgn) => (
+                    <mesh
+                      key={sgn}
+                      position={[sgn * 0.16, 0.95, 0]}
+                      rotation={[0, 0, sgn * 0.5]}
+                      castShadow
+                    >
+                      <coneGeometry args={[0.07, 0.34, look.shape === "ethereal" ? 4 : 3]} />
+                      <meshStandardMaterial
+                        color={look.accent}
+                        emissive={look.accent}
+                        emissiveIntensity={look.glow}
+                        metalness={0.7}
+                        roughness={0.25}
+                      />
+                    </mesh>
+                  ))}
+                </>
+              )}
+              {look.shape === "ethereal" && (
+                <mesh position={[0, 0.9, 0]} rotation={[Math.PI / 2, 0, 0]}>
+                  <torusGeometry args={[0.3, 0.012, 6, 28]} />
+                  <meshBasicMaterial color={look.accent} transparent opacity={0.6} />
+                </mesh>
+              )}
+
               {/* reel */}
               <mesh position={[0.28, 0.75, 0]} rotation={[0, 0, Math.PI / 2]} castShadow>
                 <cylinderGeometry args={[0.24, 0.24, 0.28, 12]} />
