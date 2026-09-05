@@ -1179,14 +1179,37 @@ export function Angler() {
               {/* flexible upper blank */}
               <group ref={rodBend} position={[0, 0.9, 0]}>
                 <mesh position={[0, 1.5, 0]} castShadow>
-                  <cylinderGeometry args={[0.055, 0.1, 3, 8]} />
+                  <cylinderGeometry
+                    args={[
+                      look.blankRadius[1],
+                      look.blankRadius[0],
+                      3,
+                      look.shape === "wood" ? 6 : look.shape === "carved" ? 5 : 10,
+                    ]}
+                  />
                   <meshStandardMaterial
                     color={look.blank}
-                    roughness={0.5}
+                    roughness={look.shape === "wood" ? 0.9 : 0.4}
+                    metalness={look.shape === "slim" || look.shape === "ethereal" ? 0.55 : 0.1}
                     emissive={look.accent}
                     emissiveIntensity={look.glow * 0.5}
                   />
                 </mesh>
+                {/* lilitan/ukiran khas tier */}
+                {(look.shape === "fiber" || look.shape === "carved" || look.shape === "ornate") &&
+                  [0.4, 1.1, 1.8, 2.5].map((y, i) => (
+                    <mesh key={i} position={[0, y, 0]} rotation={[Math.PI / 2, 0, 0]} castShadow>
+                      <torusGeometry args={[look.blankRadius[0] * 1.05, 0.014, 6, 12]} />
+                      <meshStandardMaterial
+                        color={look.accent}
+                        metalness={0.6}
+                        roughness={0.35}
+                        emissive={look.accent}
+                        emissiveIntensity={look.glow * 0.6}
+                      />
+                    </mesh>
+                  ))}
+
                 {/* ring guide bawah */}
                 <group position={[0.12, 1.0, 0]}>
                   <object3D ref={(o) => (guideRefs.current[1] = o)} />
