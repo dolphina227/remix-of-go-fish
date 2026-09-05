@@ -1291,7 +1291,7 @@ function BaitOrb3D() {
             {mat}
           </mesh>
           <mesh position={[0, 0.02, 0]} rotation={[Math.PI, 0, 0]}>
-            <coneGeometry args={[0.14, 0.22, 10, 1, true)]} />
+            <coneGeometry args={[0.14, 0.22, 10, 1, true]} />
             <meshBasicMaterial color={look.accent} transparent opacity={0.35} side={2} />
           </mesh>
         </>
