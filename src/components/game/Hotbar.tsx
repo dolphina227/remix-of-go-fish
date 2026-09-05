@@ -7,10 +7,16 @@ import { getFishData, mutationFor, priceFor, rodOrDefault } from "@/lib/fishRule
 import { useRodStore } from "@/hooks/useRodStore";
 import { useBaitStore } from "@/hooks/useBaitStore";
 import { baitOrDefault } from "@/lib/fishRules";
+import type { Rarity } from "@/lib/fishRules";
+import { useFishThumbnail } from "@/hooks/useFishThumbnail";
 
 function speciesInfo(id: string) {
   const s = getFishData().species.find((sp) => sp.id === id);
-  return { name: s?.name ?? id, color: s?.color ?? "#93c5fd" };
+  return {
+    name: s?.name ?? id,
+    color: s?.color ?? "#93c5fd",
+    rarity: (s?.rarity ?? "common") as Rarity,
+  };
 }
 
 /**
