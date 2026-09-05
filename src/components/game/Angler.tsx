@@ -18,6 +18,7 @@ import { biteWindowFor } from "@/lib/fishRules";
 import { useBaitStore } from "@/hooks/useBaitStore";
 import { baitLook } from "@/lib/baitLooks";
 import { useProfileStore } from "@/hooks/useProfileStore";
+import { useHookedFish } from "@/hooks/useHookedFish";
 import {
   playBobberSplash,
   playCastWhizz,
@@ -182,6 +183,7 @@ export function Angler() {
       st.t = 0;
       st.whizzed = false;
       st.fish = null;
+      useHookedFish.getState().clear();
       setPhase("cast");
       setMessage("Casting...");
     } else if (st.phase === "bite") {
@@ -508,6 +510,7 @@ export function Angler() {
         st.phase = "bite";
         st.t = 0;
         st.fish = rollFish(useWeather.getState().kind);
+        useHookedFish.getState().hook(st.fish.rarity, st.fish.weight);
         setPhase("bite");
         setMessage("FISH ON! Press SPACE / ENTER now!");
       }
@@ -528,6 +531,8 @@ export function Angler() {
         st.phase = "idle";
         st.t = 0;
         st.fish = null;
+        useHookedFish.getState().clear();
+      useHookedFish.getState().clear();
         setPhase("idle");
         setMessage("It got away! Cast again.");
       }
@@ -1188,7 +1193,7 @@ export function Angler() {
 
       {/* hooked fish */}
       <group ref={hooked} visible={false}>
-        <FishMesh color="#e8a04a" scale={1.25} wagSpeed={18} />
+        <FishMesh color="#e8a04a" scale={1} wagSpeed={18} />
       </group>
 
       {/* monster raksasa saat tertangkap */}
