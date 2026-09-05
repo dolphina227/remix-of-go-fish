@@ -4,30 +4,60 @@ import { useProfileStore } from "@/hooks/useProfileStore";
 import { useRodStore } from "@/hooks/useRodStore";
 import { rodLook } from "@/lib/rodLooks";
 
-/** Gambar pancing 2D per tier, warna mengikuti model 3D-nya. */
+/** Gambar pancing 2D per tier — bentuk dan ornamennya beda tiap rarity. */
 function RodIllustration({ rodId, glow }: { rodId: string; glow: number }) {
   const look = rodLook(rodId);
+  const w = look.blankRadius[0] * 46;
   return (
     <svg viewBox="0 0 80 130" className="h-full w-full" aria-hidden>
       {glow > 0 && (
         <circle cx="40" cy="62" r="34" fill={look.accent} opacity={0.12 + glow * 0.15} />
       )}
       {/* blank (batang) */}
-      <line x1="34" y1="112" x2="52" y2="18" stroke={look.blank} strokeWidth="5" strokeLinecap="round" />
+      <line x1="34" y1="112" x2="52" y2="18" stroke={look.blank} strokeWidth={w} strokeLinecap="round" />
       {/* tip */}
-      <line x1="50" y1="26" x2="52" y2="18" stroke={look.tip} strokeWidth="3" strokeLinecap="round" />
+      <line x1="50" y1="26" x2="52" y2="18" stroke={look.tip} strokeWidth={w * 0.6} strokeLinecap="round" />
       {/* guide rings */}
       {[96, 78, 60, 42].map((y, i) => (
         <circle key={y} cx={35.5 + i * 1.1} cy={y} r="2.4" fill="none" stroke={look.accent} strokeWidth="1.2" />
       ))}
+      {/* ornamen permata khas tier */}
+      {Array.from({ length: look.gems }, (_, i) => (
+        <polygon
+          key={i}
+          points="0,-3.2 2.6,0 0,3.2 -2.6,0"
+          fill={look.accent}
+          opacity="0.95"
+          transform={`translate(${37 + i * 0.9}, ${104 - i * 14})`}
+        />
+      ))}
+      {/* sayap ornamen untuk legendary / mythic */}
+      {(look.shape === "ornate" || look.shape === "ethereal") && (
+        <>
+          <path d="M34 100 L22 88 L34 92 Z" fill={look.accent} opacity="0.85" />
+          <path d="M36 100 L48 88 L36 92 Z" fill={look.accent} opacity="0.85" />
+        </>
+      )}
+      {look.shape === "ethereal" && (
+        <ellipse cx="35" cy="100" rx="13" ry="4.5" fill="none" stroke={look.accent} strokeWidth="1" opacity="0.7" />
+      )}
       {/* grip */}
-      <line x1="32" y1="122" x2="34" y2="106" stroke={look.grip} strokeWidth="8" strokeLinecap="round" />
+      <line
+        x1="32"
+        y1="122"
+        x2="34"
+        y2="106"
+        stroke={look.grip}
+        strokeWidth={look.gripRadius * 58}
+        strokeLinecap={look.shape === "wood" ? "square" : "round"}
+      />
       {/* reel */}
-      <rect x="38" y="92" width="13" height="13" rx="2.5" fill={look.accent} opacity="0.9" />
+      <rect x="38" y="92" width="13" height="13" rx={look.shape === "wood" ? 1 : 5} fill={look.accent} opacity="0.9" />
       <circle cx="44.5" cy="98.5" r="3.4" fill={look.blank} />
     </svg>
   );
 }
+
 
 /** Old Bram's rod stock: kartu horizontal — stat, harga, beli, pakai. */
 export function RodShop() {
