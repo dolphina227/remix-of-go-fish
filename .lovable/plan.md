@@ -1,12 +1,26 @@
 # Ganti model ikan per tingkat kelangkaan
 
 ## Jawaban soal upload GLB yang selalu gagal
-Masalah yang terlihat pada screenshot adalah **unggahan batch 6 file gagal dan seluruh batch dibuang**. File koi Common (~20 MB) yang dikirim sendirian sudah masuk dengan selamat, jadi format GLB-nya diterima.
+Screenshot kamu menunjukkan error "File upload failed — Failed to upload 6 files. Removing failed uploads." Artinya **batch 6 file ditolak sekaligus**. File Koi Common (~20 MB) yang dikirim sendirian sudah masuk, jadi format GLB-nya diterima.
 
-Gunakan urutan alternatif ini:
-1. Kirim **satu GLB per pesan**, jangan enam sekaligus. Tunggu sampai file terlihat terkirim sebelum mengirim berikutnya.
-2. Jika satu file tertentu tetap gagal, unggah file itu ke Google Drive, Dropbox, atau GitHub Release, aktifkan akses publik, lalu kirim link unduhnya di chat. Saya dapat mengambil file langsung dari link tersebut.
-3. Jangan ubah ke ZIP bila hasil ZIP masih mendekati 20 MB; itu tidak menyelesaikan batas unggahan.
+Tiga cara yang bisa dipakai (urut dari termudah):
+
+**A. Satu GLB per pesan (paling mudah)**
+Kirim satu file saja tiap pesan, jangan enam sekaligus. Tunggu sampai muncul di chat baru kirim berikutnya.
+
+**B. Lewat link GitHub (bisa!)**
+1. Buat repo publik gratis di GitHub (atau pakai repo yang sudah ada), lalu `Add file → Upload files` di browser dan unggah keempat GLB.
+2. Buka file di GitHub, klik tombol **Raw** → salin URL-nya. Bentuknya seperti:
+   `https://raw.githubusercontent.com/USERNAME/REPO/main/Koi_Carp_Rare.glb`
+3. Kirim keempat link itu ke chat dalam satu pesan. Saya unduh langsung pakai `curl` dan pasang ke proyek.
+
+Alternatif: taruh file sebagai **Release** (`Releases → Draft a new release → Attach binaries`), lalu kirim link unduhnya:
+`https://github.com/USERNAME/REPO/releases/download/TAG/Koi_Carp_Rare.glb`
+
+**C. Google Drive / Dropbox**
+Unggah, setel akses publik ("Anyone with the link"), kirim link-nya. (GitHub biasanya lebih andal untuk file binary besar.)
+
+Catatan: jangan ZIP — kalau ZIP-nya tetap sekitar 20 MB batasnya tetap kena.
 
 ## Yang akan dikerjakan
 
