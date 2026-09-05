@@ -1,31 +1,40 @@
-# Ganti model ikan per tingkat kelangkaan
+# Ganti model ikan per kelas kelangkaan
 
-## Soal upload: sudah beres lewat GitHub
-Link GitHub kamu berhasil dibaca. Semua model ikan sudah bisa diambil langsung dari sana, jadi tidak perlu upload lewat chat lagi. File yang ditemukan:
+Ikan yang tertangkap sekarang masih bentuk balok/bola buatan kode. Rencananya diganti dengan model ikan asli dari koleksi GitHub yang kamu kirim, dan tiap kelas punya ukuran berbeda.
 
-| Tingkat | File | Ukuran |
-| --- | --- | --- |
-| common | Koi_Carp_Common.glb (dari chat) | 19,9 MB |
-| rare | fish rare.glb | 19,7 MB |
-| epic | Largemouth Bas epic.glb | 19,5 MB |
-| legendary | legendaryfish.glb, red octopus legendary.glb | 19,7 / 19,5 MB |
-| mythic | bluesharkmythic.glb, normal shark mythic.glb, mythicfish.glb | 20,2 / 19,2 / 58 MB |
+## Model yang dipakai
 
-## Yang akan dikerjakan
+Dari folder GitHub-mu (semua terbaca):
 
-1. **Unduh semua model dari GitHub** ke dalam proyek.
+- common: Koi Carp Common
+- rare: fish rare
+- epic: Largemouth Bass epic
+- legendary: legendaryfish, red octopus legendary (dipilih acak)
+- mythic: bluesharkmythic, mythicfish, normal shark mythic (dipilih acak)
 
-2. **Kecilkan ukuran file.** Total mentahnya sekitar 195 MB — terlalu berat untuk dimuat di game. Semua model dikompresi (geometri + tekstur) dengan target di bawah ~3 MB per ikan, tampilan tetap sama.
+Semua file aslinya 19–58 MB, jauh terlalu berat untuk dimuat di game. Setiap model akan dikecilkan dulu (tekstur dan geometri dipadatkan) sampai kira-kira 1–3 MB per ikan, dengan tampilan yang tetap mirip. Kalau ada satu model yang tetap tidak bisa dikecilkan dengan wajar, aku pakai model lain dari kelas yang sama dan memberitahumu.
 
-3. **Sistem model ikan per kelangkaan.** Daftar pemetaan common, rare, epic, legendary, mythic → model masing-masing. Ikan yang tersangkut di kail menampilkan model sesuai kelangkaan tangkapan, menggantikan ikan kotak-kotak buatan kode.
+## Ukuran per kelas
 
-4. **Tingkat dengan lebih dari satu model** (legendary dan mythic) memakai semuanya sebagai variasi: model dipilih acak saat ikan tertangkap, jadi tangkapan langka terasa lebih bervariasi.
+Skala mengikuti permintaanmu:
 
-5. **Penyesuaian ukuran & arah hadap** tiap model supaya proporsional di tangan pemain dan menghadap arah yang benar.
+- mythic: sangat besar
+- legendary: besar, sedikit di bawah mythic
+- epic: sedang
+- rare: sedang, sedikit lebih kecil dari epic
+- common: kecil
 
-Monster (Ancient Leviathan) tetap memakai tampilan raksasa yang sekarang, kecuali kamu ingin diganti dengan salah satu hiu mythic.
+Ukuran juga sedikit menyesuaikan berat ikan yang tertangkap, jadi ikan berat terlihat lebih besar dari ikan ringan di kelas yang sama.
+
+## Yang tidak disentuh
+
+Cuaca, toko pancing, toko umpan, tas, harga jual, dan penyimpanan tangkapan tidak diubah. Monster Ancient Leviathan tetap memakai tampilan raksasa yang sekarang.
 
 ## Catatan teknis
-- File disimpan di `public/models/` seperti model dunia lain, dikompresi Draco/WebP agar konsisten dengan aset yang sudah ada.
-- Pemetaan baru di `src/lib/fishModels.ts`; `Fish.tsx` mendapat komponen pemuat GLB dengan Suspense + error boundary; `Angler.tsx` memilih model berdasarkan `rarity` dari `useGameStore`.
-- Tidak menyentuh sistem cuaca, toko, tas, atau penyimpanan tangkapan.
+
+- Unduh 8 GLB dari commit `a664f341` lewat URL raw, kompres dengan Draco + tekstur WebP/resize, simpan ke `public/models/` mengikuti pola nama file yang sudah ada.
+- Modul baru `src/lib/fishModels.ts`: peta `Rarity -> { url, baseScale, rotationY, yOffset }` plus pemilih acak untuk legendary/mythic.
+- `src/components/game/Fish.tsx`: `FishMesh` diubah agar memuat GLB via `useGLTF` (clone scene, animasi goyang ringan pada grup induk), dengan fallback ke mesh prosedural saat model belum termuat; dibungkus `Suspense` di dalam Canvas.
+- `Angler.tsx` baris ~1191: kirim `rarity` dan `weightKg` dari `st.fish` ke `FishMesh`, ganti prop `color`/`scale` tetap. Pemilihan varian dikunci saat fase `reel` dimulai agar tidak berganti tiap frame.
+- `useGLTF.preload` untuk kelima kelas agar tidak ada jeda saat ikan muncul.
+- Verifikasi: build + screenshot Playwright dari satu siklus lempar-tarik.
