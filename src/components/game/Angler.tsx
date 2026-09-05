@@ -1,5 +1,6 @@
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
+import { toast } from "sonner";
 import * as THREE from "three";
 import { waterHeight } from "./Ocean";
 import { FishMesh } from "./Fish";
@@ -16,6 +17,7 @@ import { biteWindowFor } from "@/lib/fishRules";
 
 import { useBaitStore } from "@/hooks/useBaitStore";
 import { baitLook } from "@/lib/baitLooks";
+import { useProfileStore } from "@/hooks/useProfileStore";
 import {
   playBobberSplash,
   playCastWhizz,
@@ -146,6 +148,10 @@ export function Angler() {
     // Keep gameplay audio unlocked even when this action is the browser's
     // very first user gesture. Sounds remain non-positional for multiplayer.
     resumeWeatherAudio();
+    if (!useProfileStore.getState().profile) {
+      toast.error("Connect your wallet to play");
+      return;
+    }
     const st = s.current;
     const store = useGameStore.getState();
     if (store.rodStowed) {
@@ -197,9 +203,29 @@ export function Angler() {
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       keys.current[e.code] = true;
+      const isMovement = [
+        "KeyW",
+        "KeyA",
+        "KeyS",
+        "KeyD",
+        "ArrowUp",
+        "ArrowDown",
+        "ArrowLeft",
+        "ArrowRight",
+      ].includes(e.code);
+      if (isMovement) {
+        if (!e.repeat && !useProfileStore.getState().profile) {
+          toast.error("Connect your wallet to play");
+        }
+        return;
+      }
       if (e.code === "Space" || e.code === "Enter") {
         e.preventDefault();
         if (e.repeat) return;
+        if (!useProfileStore.getState().profile) {
+          toast.error("Connect your wallet to play");
+          return;
+        }
         // Space = selalu lompat saat di darat; lempar/tarik kail pakai ENTER / klik kiri.
         // Saat sedang memancing (fase bukan idle) Space tetap untuk aksi pancing.
         const st = s.current;
@@ -267,7 +293,8 @@ export function Angler() {
     const k = keys.current;
     const fwd = (k["KeyW"] || k["ArrowUp"] ? 1 : 0) - (k["KeyS"] || k["ArrowDown"] ? 1 : 0);
     const side = (k["KeyD"] || k["ArrowRight"] ? 1 : 0) - (k["KeyA"] || k["ArrowLeft"] ? 1 : 0);
-    const canWalk = st.phase === "idle" && !boat.riding;
+    const profileReady = useProfileStore.getState().profile !== null;
+    const canWalk = st.phase === "idle" && !boat.riding && profileReady;
     let speed = 0;
 
     if (canWalk && (fwd !== 0 || side !== 0)) {
