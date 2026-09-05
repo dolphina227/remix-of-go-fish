@@ -532,7 +532,6 @@ export function Angler() {
         st.t = 0;
         st.fish = null;
         useHookedFish.getState().clear();
-      useHookedFish.getState().clear();
         setPhase("idle");
         setMessage("It got away! Cast again.");
       }
