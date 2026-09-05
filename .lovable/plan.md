@@ -35,7 +35,7 @@ Catatan: jangan ZIP — kalau ZIP-nya tetap sekitar 20 MB batasnya tetap kena.
 Monster (Ancient Leviathan) tetap memakai tampilan raksasa yang sekarang, kecuali kamu ingin diganti juga.
 
 ## Yang perlu kamu lakukan
-Kirim satu per satu lewat chat: rare, epic, legendary, mythic. Jika salah satunya masih gagal saat dikirim sendiri, kirim link publik file tersebut.
+Kirim 4 file sisanya (rare, epic, legendary, mythic) lewat salah satu cara di atas. Kalau pakai GitHub, kirim 4 link raw dalam satu pesan saja.
 
 ## Catatan teknis
 - File disimpan di `public/models/` seperti model dunia lain, dikompresi Draco/WebP agar konsisten dengan aset yang sudah ada.
