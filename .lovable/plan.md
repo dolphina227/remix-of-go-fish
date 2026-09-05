@@ -1,7 +1,12 @@
 # Ganti model ikan per tingkat kelangkaan
 
 ## Jawaban soal upload GLB yang selalu gagal
-Upload lewat editor di dalam game memang sering gagal untuk file sebesar ini. Cara lain yang **sudah terbukti berhasil**: kirim file GLB langsung ke chat ini — file koi kamu (~20 MB) barusan masuk dengan selamat lewat chat dan sudah bisa saya pasang. Jadi kirim saja 4 file sisanya (rare, epic, legendary, mythic) lewat chat, maksimal 10 file per pesan, bisa sekaligus atau satu-satu.
+Masalah yang terlihat pada screenshot adalah **unggahan batch 6 file gagal dan seluruh batch dibuang**. File koi Common (~20 MB) yang dikirim sendirian sudah masuk dengan selamat, jadi format GLB-nya diterima.
+
+Gunakan urutan alternatif ini:
+1. Kirim **satu GLB per pesan**, jangan enam sekaligus. Tunggu sampai file terlihat terkirim sebelum mengirim berikutnya.
+2. Jika satu file tertentu tetap gagal, unggah file itu ke Google Drive, Dropbox, atau GitHub Release, aktifkan akses publik, lalu kirim link unduhnya di chat. Saya dapat mengambil file langsung dari link tersebut.
+3. Jangan ubah ke ZIP bila hasil ZIP masih mendekati 20 MB; itu tidak menyelesaikan batas unggahan.
 
 ## Yang akan dikerjakan
 
@@ -16,7 +21,7 @@ Upload lewat editor di dalam game memang sering gagal untuk file sebesar ini. Ca
 Monster (Ancient Leviathan) tetap memakai tampilan raksasa yang sekarang, kecuali kamu ingin diganti juga.
 
 ## Yang perlu kamu lakukan
-Kirim empat file GLB lagi lewat chat: rare, epic, legendary, mythic.
+Kirim satu per satu lewat chat: rare, epic, legendary, mythic. Jika salah satunya masih gagal saat dikirim sendiri, kirim link publik file tersebut.
 
 ## Catatan teknis
 - File disimpan di `public/models/` seperti model dunia lain, dikompresi Draco/WebP agar konsisten dengan aset yang sudah ada.
