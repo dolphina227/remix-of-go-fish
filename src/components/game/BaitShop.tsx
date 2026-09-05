@@ -4,10 +4,11 @@ import { useProfileStore } from "@/hooks/useProfileStore";
 import { useBaitStore } from "@/hooks/useBaitStore";
 import { baitLook } from "@/lib/baitLooks";
 
-/** Bola umpan 2D per tier, warna dan cahayanya sama dengan model di air. */
+/** Gambar umpan 2D per tier — bentuknya mengikuti model di air. */
 function BaitOrb({ baitId }: { baitId: string }) {
   const look = baitLook(baitId);
   const id = `bait-${baitId}`;
+  const fill = `url(#${id})`;
   return (
     <svg viewBox="0 0 100 100" className="h-full w-full" aria-hidden>
       <defs>
@@ -20,12 +21,60 @@ function BaitOrb({ baitId }: { baitId: string }) {
       {look.glow > 0 && (
         <circle cx="50" cy="52" r={30 + look.glow * 14} fill={look.core} opacity={0.1 + look.glow * 0.18} />
       )}
-      <circle cx="50" cy="52" r="26" fill={`url(#${id})`} />
-      <circle cx="50" cy="52" r="26" fill="none" stroke={look.accent} strokeWidth="1.5" opacity="0.6" />
-      <ellipse cx="41" cy="42" rx="7" ry="5" fill="#ffffff" opacity="0.55" />
+      {look.shape === "grub" && (
+        <>
+          <ellipse cx="50" cy="54" rx="17" ry="26" fill={fill} transform="rotate(-20 50 54)" />
+          <circle cx="58" cy="34" r="8" fill={look.shell} />
+        </>
+      )}
+      {look.shape === "cluster" && (
+        <>
+          <circle cx="44" cy="44" r="17" fill={fill} />
+          <circle cx="62" cy="55" r="13" fill={fill} />
+          <circle cx="45" cy="68" r="11" fill={fill} />
+        </>
+      )}
+      {look.shape === "crystal" && (
+        <>
+          <polygon points="50,18 72,52 50,86 28,52" fill={fill} />
+          <polygon points="50,18 72,52 50,52" fill={look.accent} opacity="0.35" />
+        </>
+      )}
+      {look.shape === "rune" && (
+        <>
+          <circle cx="50" cy="52" r="24" fill="none" stroke={look.accent} strokeWidth="2.5" opacity="0.75" />
+          <polygon points="50,28 71,64 29,64" fill={fill} />
+          <circle cx="50" cy="55" r="7" fill={look.shell} />
+        </>
+      )}
+      {look.shape === "flame" && (
+        <>
+          <path d="M50 16 C66 40 72 56 62 72 C56 82 44 82 38 72 C28 56 34 40 50 16 Z" fill={fill} />
+          <path d="M50 42 C58 56 58 66 50 74 C42 66 42 56 50 42 Z" fill={look.accent} opacity="0.7" />
+        </>
+      )}
+      {look.shape === "void" && (
+        <>
+          <polygon points="50,20 76,38 76,66 50,84 24,66 24,38" fill={fill} />
+          <ellipse cx="50" cy="52" rx="36" ry="12" fill="none" stroke={look.core} strokeWidth="2" opacity="0.7" />
+          <ellipse
+            cx="50"
+            cy="52"
+            rx="34"
+            ry="11"
+            fill="none"
+            stroke={look.accent}
+            strokeWidth="1.4"
+            opacity="0.6"
+            transform="rotate(40 50 52)"
+          />
+        </>
+      )}
+      <ellipse cx="41" cy="40" rx="6" ry="4" fill="#ffffff" opacity="0.45" />
     </svg>
   );
 }
+
 
 /** Pip's bait stock: kartu horizontal — luck, harga, beli, pakai. */
 export function BaitShop() {
