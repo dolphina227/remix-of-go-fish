@@ -13,7 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { WagmiProvider } from "wagmi";
 import { wagmiConfig } from "../lib/wagmi";
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster as SonnerToaster } from "sonner";
 
 function NotFoundComponent() {
   return (
@@ -118,7 +118,7 @@ function RootComponent() {
       <WagmiProvider config={wagmiConfig}>
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
-        <Toaster />
+        <SonnerToaster position="top-center" />
       </WagmiProvider>
     </QueryClientProvider>
   );
