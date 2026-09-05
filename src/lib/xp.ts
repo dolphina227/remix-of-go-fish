@@ -1,12 +1,14 @@
-/** XP curve mirroring the database: level N requires 100 * (N-1)^2 total XP. */
+/** XP curve mirroring the database: every level costs a flat 500 XP, forever. */
+
+export const XP_PER_LEVEL = 500;
 
 export function xpForLevel(level: number): number {
   const n = Math.max(1, Math.floor(level));
-  return 100 * (n - 1) * (n - 1);
+  return XP_PER_LEVEL * (n - 1);
 }
 
 export function levelForXp(xp: number): number {
-  return Math.max(1, Math.floor(Math.sqrt(Math.max(0, xp) / 100)) + 1);
+  return Math.max(1, Math.floor(Math.max(0, xp) / XP_PER_LEVEL) + 1);
 }
 
 export interface XpProgress {
