@@ -1,41 +1,29 @@
 # Ganti model ikan per tingkat kelangkaan
 
-## Jawaban soal upload GLB yang selalu gagal
-Screenshot kamu menunjukkan error "File upload failed — Failed to upload 6 files. Removing failed uploads." Artinya **batch 6 file ditolak sekaligus**. File Koi Common (~20 MB) yang dikirim sendirian sudah masuk, jadi format GLB-nya diterima.
+## Soal upload: sudah beres lewat GitHub
+Link GitHub kamu berhasil dibaca. Semua model ikan sudah bisa diambil langsung dari sana, jadi tidak perlu upload lewat chat lagi. File yang ditemukan:
 
-Tiga cara yang bisa dipakai (urut dari termudah):
-
-**A. Satu GLB per pesan (paling mudah)**
-Kirim satu file saja tiap pesan, jangan enam sekaligus. Tunggu sampai muncul di chat baru kirim berikutnya.
-
-**B. Lewat link GitHub (bisa!)**
-1. Buat repo publik gratis di GitHub (atau pakai repo yang sudah ada), lalu `Add file → Upload files` di browser dan unggah keempat GLB.
-2. Buka file di GitHub, klik tombol **Raw** → salin URL-nya. Bentuknya seperti:
-   `https://raw.githubusercontent.com/USERNAME/REPO/main/Koi_Carp_Rare.glb`
-3. Kirim keempat link itu ke chat dalam satu pesan. Saya unduh langsung pakai `curl` dan pasang ke proyek.
-
-Alternatif: taruh file sebagai **Release** (`Releases → Draft a new release → Attach binaries`), lalu kirim link unduhnya:
-`https://github.com/USERNAME/REPO/releases/download/TAG/Koi_Carp_Rare.glb`
-
-**C. Google Drive / Dropbox**
-Unggah, setel akses publik ("Anyone with the link"), kirim link-nya. (GitHub biasanya lebih andal untuk file binary besar.)
-
-Catatan: jangan ZIP — kalau ZIP-nya tetap sekitar 20 MB batasnya tetap kena.
+| Tingkat | File | Ukuran |
+| --- | --- | --- |
+| common | Koi_Carp_Common.glb (dari chat) | 19,9 MB |
+| rare | fish rare.glb | 19,7 MB |
+| epic | Largemouth Bas epic.glb | 19,5 MB |
+| legendary | legendaryfish.glb, red octopus legendary.glb | 19,7 / 19,5 MB |
+| mythic | bluesharkmythic.glb, normal shark mythic.glb, mythicfish.glb | 20,2 / 19,2 / 58 MB |
 
 ## Yang akan dikerjakan
 
-1. **Pasang model koi (common)** yang sudah kamu kirim ke dalam proyek, dengan pengecilan ukuran file dulu (kompresi geometri + tekstur) supaya game tetap ringan saat dimuat. Target di bawah ~3 MB per ikan.
+1. **Unduh semua model dari GitHub** ke dalam proyek.
 
-2. **Sistem model ikan per kelangkaan.** Satu daftar pemetaan: common, rare, epic, legendary, mythic → file model masing‑masing. Ikan yang tersangkut di kail akan menampilkan model sesuai kelangkaan tangkapan, bukan lagi ikan kotak-kotak buatan kode.
+2. **Kecilkan ukuran file.** Total mentahnya sekitar 195 MB — terlalu berat untuk dimuat di game. Semua model dikompresi (geometri + tekstur) dengan target di bawah ~3 MB per ikan, tampilan tetap sama.
 
-3. **Cadangan aman.** Untuk tingkat yang modelnya belum kamu kirim, ikan lama tetap dipakai dengan warna khas tiap tingkat, jadi game tidak pernah kosong atau error. Begitu file berikutnya dikirim lewat chat, tinggal ditambahkan ke daftar tanpa mengubah kode lain.
+3. **Sistem model ikan per kelangkaan.** Daftar pemetaan common, rare, epic, legendary, mythic → model masing-masing. Ikan yang tersangkut di kail menampilkan model sesuai kelangkaan tangkapan, menggantikan ikan kotak-kotak buatan kode.
 
-4. **Penyesuaian ukuran & arah hadap** tiap model (skala dan putaran) supaya ikan tampil proporsional di tangan pemain dan menghadap arah yang benar.
+4. **Tingkat dengan lebih dari satu model** (legendary dan mythic) memakai semuanya sebagai variasi: model dipilih acak saat ikan tertangkap, jadi tangkapan langka terasa lebih bervariasi.
 
-Monster (Ancient Leviathan) tetap memakai tampilan raksasa yang sekarang, kecuali kamu ingin diganti juga.
+5. **Penyesuaian ukuran & arah hadap** tiap model supaya proporsional di tangan pemain dan menghadap arah yang benar.
 
-## Yang perlu kamu lakukan
-Kirim 4 file sisanya (rare, epic, legendary, mythic) lewat salah satu cara di atas. Kalau pakai GitHub, kirim 4 link raw dalam satu pesan saja.
+Monster (Ancient Leviathan) tetap memakai tampilan raksasa yang sekarang, kecuali kamu ingin diganti dengan salah satu hiu mythic.
 
 ## Catatan teknis
 - File disimpan di `public/models/` seperti model dunia lain, dikompresi Draco/WebP agar konsisten dengan aset yang sudah ada.
